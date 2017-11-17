@@ -1,0 +1,7 @@
+include "mesh_gen.idp"
+
+verbosity=0;				
+real [int,int] BBB=[[-6, 6],[-6, 6],[-6, 6]];     //coordinates the cube
+mesh3 Th=meshgen(BBB, 0, 0, 0, 1);             // numbers are coordinates of impurities
+medit(1,Th);
+savemesh(Th,"/home/m_klymenko/P_bulk/dis_scr/mesh_sample.mesh"); // save mesh for further processing

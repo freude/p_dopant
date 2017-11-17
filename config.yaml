@@ -1,0 +1,18 @@
+verbosity:     true
+
+# mesh properties
+
+
+
+
+# geometrical parameters of the problem
+
+
+
+
+# Schroedinger equation solver
+
+
+
+
+# valley-orbit splitting
