@@ -74,20 +74,21 @@ def read_wf(T, k1):
 
     pwd = os.path.dirname(os.path.abspath(__file__))
 
-    if os.path.isfile(os.path.join(pwd, 'dis_scr/wfr_' + str(indi) + '_' + str(T) + '.npy')) and \
-            os.path.isfile(os.path.join(pwd, 'dis_scr/wfi_' + str(indi) + '_' + str(T) + '.npy')):
+    if os.path.isfile(os.path.join(pwd, 'p_dopant_data/wfr_' + str(indi) + '_' + str(T) + '.npy')) and \
+            os.path.isfile(os.path.join(pwd, 'p_dopant_data/wfi_' + str(indi) + '_' + str(T) + '.npy')):
 
         log.info("    Loading wave functions wfr and wfi from disk...."),
 
-        wfr = np.load(os.path.join(pwd, 'dis_scr/wfr_' + str(indi) + '_' + str(T) + '.npy'))
-        wfi = np.load(os.path.join(pwd, 'dis_scr/wfi_' + str(indi) + '_' + str(T) + '.npy'))
+        wfr = np.load(os.path.join(pwd, 'p_dopant_data/wfr_' + str(indi) + '_' + str(T) + '.npy'))
+        wfi = np.load(os.path.join(pwd, 'p_dopant_data/wfi_' + str(indi) + '_' + str(T) + '.npy'))
         wf = wfr + 1j * wfi
 
         log.info("    Done!")
 
     else:
 
-        wf = np.loadtxt('/home/m_klymenko/P_bulk/si_wf/wf_k87_b5')
+        wf = np.loadtxt(os.path.join(os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir)),
+                                     'p_dopant_data/wf_k87_b5.npy'))
         # wf = read_cube('/home/mk/qe_si/results/silicon.wf_K001_B005.cube')
         # wfr = transform_to_uc(wf, 30)
         # wfi = np.zeros(np.shape(wfr))
@@ -97,8 +98,8 @@ def read_wf(T, k1):
         #wfr = transform_to_uc(wfr, T)
         #wfi = transform_to_uc(wfi, T)
 
-        np.save(os.path.join(pwd, 'dis_scr/wfr_'+ str(indi) + '_' + str(T) + '.npy'), wfr)
-        np.save(os.path.join(pwd, 'dis_scr/wfi_'+ str(indi) + '_' + str(T) + '.npy'), wfi)
+        np.save(os.path.join(pwd, 'p_dopant_data/wfr_'+ str(indi) + '_' + str(T) + '.npy'), wfr)
+        np.save(os.path.join(pwd, 'p_dopant_data/wfi_'+ str(indi) + '_' + str(T) + '.npy'), wfi)
 
         wf = wfr + 1j * wfi
 

@@ -58,7 +58,7 @@ def parse_mesh_file(path_to_mesh=None):
 
     if path_to_mesh is None:
         path_to_mesh = os.getcwd()
-        path_to_mesh = os.path.join(path_to_mesh, 'dis_scr/mesh_sample.mesh')
+        path_to_mesh = os.path.join(path_to_mesh, 'p_dopant_data/mesh_sample.mesh')
 
     ind = read_txt_between_delimiters(path_to_mesh, 'Vertices', 'Tetrahedra')
 
@@ -104,13 +104,13 @@ def pot_for_ff(k1, k2, file_ind):
         V1sm = np.real(V1sm[::2, ::2, ::2])
 
     if not np.iscomplexobj(V1sm):
-        if os.path.isfile(os.path.join(pwd, 'dis_scr/F' + str(file_ind) + '.pkl')):
-            with open(os.path.join(pwd, 'dis_scr/F' + str(file_ind) + '.pkl'), 'rb') as input:
+        if os.path.isfile(os.path.join(pwd, 'p_dopant_data/F' + str(file_ind) + '.pkl')):
+            with open(os.path.join(pwd, 'p_dopant_data/F' + str(file_ind) + '.pkl'), 'rb') as input:
                 F = pickle.load(input)
         else:
             V1sm = np.transpose(V1sm, (1, 0, 2))
             F = RegularGridInterpolator((x, x, x), V1sm, bounds_error=False)
-            with open(os.path.join(pwd, 'dis_scr/F'+ str(file_ind) + '.pkl'), 'wb') as output:
+            with open(os.path.join(pwd, 'p_dopant_data/F'+ str(file_ind) + '.pkl'), 'wb') as output:
                 pickle.dump(F, output)
 
         log.info('Done!')
@@ -121,18 +121,18 @@ def pot_for_ff(k1, k2, file_ind):
         log.info('Done!')
 
         log.info('Save the potential and the mesh...'),
-        np.savetxt(os.path.join(pwd, 'dis_scr/pot' + str(file_ind) + '.txt'), pot)
-        np.savetxt(os.path.join(pwd, 'dis_scr/mesh.dat'), b)
+        np.savetxt(os.path.join(pwd, 'p_dopant_data/pot' + str(file_ind) + '.txt'), pot)
+        np.savetxt(os.path.join(pwd, 'p_dopant_data/mesh.dat'), b)
         log.info('Done!\n')
 
     else:
 
-        if os.path.isfile(os.path.join(pwd, 'dis_scr/F'+ str(file_ind) + 'r.pkl')) and\
-                os.path.isfile(os.path.join(pwd, 'dis_scr/F'+ str(file_ind) + 'i.pkl')):
+        if os.path.isfile(os.path.join(pwd, 'p_dopant_data/F'+ str(file_ind) + 'r.pkl')) and\
+                os.path.isfile(os.path.join(pwd, 'p_dopant_data/F'+ str(file_ind) + 'i.pkl')):
 
-            with open(os.path.join(pwd, 'dis_scr/F'+ str(file_ind) + 'r.pkl'), 'rb') as input:
+            with open(os.path.join(pwd, 'p_dopant_data/F'+ str(file_ind) + 'r.pkl'), 'rb') as input:
                 Fr = pickle.load(input)
-            with open(os.path.join(pwd, 'dis_scr/F'+ str(file_ind) + 'i.pkl'), 'rb') as input:
+            with open(os.path.join(pwd, 'p_dopant_data/F'+ str(file_ind) + 'i.pkl'), 'rb') as input:
                 Fi = pickle.load(input)
 
         else:
@@ -141,9 +141,9 @@ def pot_for_ff(k1, k2, file_ind):
             Fr = RegularGridInterpolator((x, x, x), V1sm_r)
             Fi = RegularGridInterpolator((x, x, x), V1sm_i)
 
-            with open(os.path.join(pwd, 'dis_scr/F'+ str(file_ind) + 'r.pkl'), 'wb') as output:
+            with open(os.path.join(pwd, 'p_dopant_data/F'+ str(file_ind) + 'r.pkl'), 'wb') as output:
                 pickle.dump(Fr, output)
-            with open(os.path.join(pwd, 'dis_scr/F'+ str(file_ind) + 'i.pkl'), 'wb') as output:
+            with open(os.path.join(pwd, 'p_dopant_data/F'+ str(file_ind) + 'i.pkl'), 'wb') as output:
                 pickle.dump(Fi, output)
 
         log.info('Done!')
@@ -156,13 +156,12 @@ def pot_for_ff(k1, k2, file_ind):
         log.info('Done!')
 
         log.info('Save the potential and the mesh...'),
-        np.savetxt(os.path.join(pwd, 'dis_scr/pot' + str(file_ind) + '.txt'), pot_r)
-        np.savetxt(os.path.join(pwd, 'dis_scr/pot' + str(file_ind) + '.txt'), pot_i)
-        np.savetxt(os.path.join(pwd, 'dis_scr/mesh.dat'), b)
+        np.savetxt(os.path.join(pwd, 'p_dopant_data/pot' + str(file_ind) + '.txt'), pot_r)
+        np.savetxt(os.path.join(pwd, 'p_dopant_data/pot' + str(file_ind) + '.txt'), pot_i)
+        np.savetxt(os.path.join(pwd, 'p_dopant_data/mesh.dat'), b)
         log.info('Done!')
 
-
-if __name__ =='__main__':
+def main():
 
     verbose = True
 
@@ -185,4 +184,9 @@ if __name__ =='__main__':
     pot_for_ff(kk[0, :], kk[0, :], '1')
     pot_for_ff(kk[1, :], kk[1, :], '2')
     pot_for_ff(kk[2, :], kk[2, :], '3')
+
+
+if __name__  == '__main__':
+
+    main()
 
