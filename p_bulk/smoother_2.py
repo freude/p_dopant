@@ -226,7 +226,7 @@ def smoother_2(x, G, k1, k2, R_tr):
 
     kX, kY, kZ = np.meshgrid(kx, kx, kx)
 
-    bi = br_zone_valley(kX / si.ab, kY / si.ab, kZ / si.ab, flag1, 0)
+    bi = br_zone_valley(kX / si.ab, kY / si.ab, kZ / si.ab, flag1, 1)
     kk = (k1 - k2)
     # kk = -k1;
 

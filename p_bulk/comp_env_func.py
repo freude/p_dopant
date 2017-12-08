@@ -32,11 +32,14 @@ def main(**kwargs):
     # ---------------------- making mesh ------------------------
 
     if not os.path.isdir(path_to_data):
-        print("Path to data does not exist")
+        raise EnvironmentError("Path to data does not exist")
 
     if not os.path.isfile(os.path.join(path_to_data, 'mesh_sample.mesh')):
         # file does not exist
-        with open(os.path.join(os.path.dirname(__file__), 'make_mesh.edp'), 'w') as f:
+        path_to_make_mesh = os.path.join(os.path.dirname(__file__),
+                                         'make_mesh.edp')
+        os.system('rm %s' % path_to_make_mesh)
+        with open(path_to_make_mesh, 'w') as f:
             f.write(make_mesh_generator_script(path_to_data))
 
         sp.call(["FreeFem++", "make_mesh.edp"])

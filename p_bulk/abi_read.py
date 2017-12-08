@@ -87,8 +87,7 @@ def read_wf(T, k1):
 
     else:
 
-        wf = np.loadtxt(os.path.join(os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir)),
-                                     'p_dopant_data/wf_k87_b5.npy'))
+        wf = np.loadtxt(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'p_dopant_data/wf_k87_b5'))
         # wf = read_cube('/home/mk/qe_si/results/silicon.wf_K001_B005.cube')
         # wfr = transform_to_uc(wf, 30)
         # wfi = np.zeros(np.shape(wfr))

@@ -100,8 +100,9 @@ def pot_for_ff(k1, k2, file_ind):
     # prepare data
 
     if (k1 == k2).all():
-        x = x[::2]
-        V1sm = np.real(V1sm[::2, ::2, ::2])
+        # x = x[::2]
+        # V1sm = np.real(V1sm[::2, ::2, ::2])
+        V1sm = np.real(V1sm)
 
     if not np.iscomplexobj(V1sm):
         if os.path.isfile(os.path.join(pwd, 'p_dopant_data/F' + str(file_ind) + '.pkl')):
@@ -110,7 +111,7 @@ def pot_for_ff(k1, k2, file_ind):
         else:
             V1sm = np.transpose(V1sm, (1, 0, 2))
             F = RegularGridInterpolator((x, x, x), V1sm, bounds_error=False)
-            with open(os.path.join(pwd, 'p_dopant_data/F'+ str(file_ind) + '.pkl'), 'wb') as output:
+            with open(os.path.join(pwd, 'p_dopant_data/F' + str(file_ind) + '.pkl'), 'wb') as output:
                 pickle.dump(F, output)
 
         log.info('Done!')
@@ -148,7 +149,7 @@ def pot_for_ff(k1, k2, file_ind):
 
         log.info('Done!')
 
-        log.info('Compute the potetnial on the mesh...')
+        log.info('Compute the potential on the mesh...')
         pot_r = Fr(b)
         pot_i = Fi(b)
         pot_r = np.nan_to_num(pot_r)
@@ -161,6 +162,7 @@ def pot_for_ff(k1, k2, file_ind):
         np.savetxt(os.path.join(pwd, 'p_dopant_data/mesh.dat'), b)
         log.info('Done!')
 
+
 def main():
 
     verbose = True
@@ -170,7 +172,6 @@ def main():
         log.info("Verbose output.")
     else:
         log.basicConfig(format="%(levelname)s: %(message)s")
-
 
     k0 = si.k0 * si.ab
 
@@ -186,7 +187,7 @@ def main():
     pot_for_ff(kk[2, :], kk[2, :], '3')
 
 
-if __name__  == '__main__':
+if __name__ == '__main__':
 
     main()
 

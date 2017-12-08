@@ -9,7 +9,7 @@ func mesh3 meshgen(real[int,int] &B ,real x0, real y0, real z0, int flag){
 
     //----------------------------------------------------------------
 
-    int[int] N=[8,8,8]; //initial number of elements of the cube
+    int[int] N=[5,5,5]; //initial number of elements of the cube
     int [int,int] L=[[1,2],[3,4],[5,6]]; //labels of fringes
     mesh3 ThH = SurfaceHex(N,B,L,1); //generation of the cube surface mesh
 
@@ -19,13 +19,13 @@ func mesh3 meshgen(real[int,int] &B ,real x0, real y0, real z0, int flag){
     real hs = abs(B(0,0)-B(0,1))/N(0);
     real voltet=(hs*hs*hs)/6.;
 
-
     real[int] domaine = [0,0,0.15,145,voltet];
     mesh3 Th1 = tetg(ThH,switch="pqaAAYYQ",nbofregions=1,regionlist=domaine);
 
     Th1=tetgreconstruction(Th1,switch="raAQ",sizeofvolume=voltet/20);
 
     if (flag==1){
+        //func f=0.0015*(sqrt(((x-x0)^2+(y-y0)^2+(z-z0)^2)))^(3.9)+0.000000001;
         func f=0.0015*(sqrt(((x-x0)^2+(y-y0)^2+(z-z0)^2)))^(3.9)+0.000000001;
         Th1=tetgreconstruction(Th1,switch="raAQ",sizeofvolume=f);
     }
