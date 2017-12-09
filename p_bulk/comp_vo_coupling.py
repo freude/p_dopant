@@ -23,7 +23,7 @@ Nbands = np.size(bands)
 # Nbands = np.size(bands)
 
 x = np.linspace(-6, 6, 100)
-path = os.path.join(pth, 'dis_scr/')
+path = os.path.join(pth, 'p_bulk/p_dopant_data/')
 amp, _ = read_env1(x, bands, path,
                 kk[0, :],
                 0,

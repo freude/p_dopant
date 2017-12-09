@@ -243,9 +243,9 @@ def smoother_2(x, G, k1, k2, R_tr):
             V -= pot_scr(qq) * (G[j, 3] + 1j * G[j, 4]) * 4 * math.pi / (qq**2)
 
     V_log = np.log(V)
-    plt.imshow(np.abs((bi * 0.3 * np.max(V_log) + V_log)[:, :, V.shape[2] / 2]))
+    # plt.imshow(np.abs((bi * 0.3 * np.max(V_log) + V_log)[:, :, V.shape[2] / 2]))
     # plt.imshow(np.abs((V_log)[:, :, V.shape[2] / 2]))
-    plt.show()
+    # plt.show()
     # fig = plt.figure()
     # ax = fig.add_subplot(111, projection='3d')
     # ax.plot_trisurf(V_log[:, 0], V_log[:, 1], V_log[:, 2], cmap='Spectral', lw=1)
