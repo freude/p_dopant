@@ -32,11 +32,11 @@ M1=zeros(Nbands,3,length(x),length(x),length(x));
 
 aa=0;
 
-for jj1=1:3    
+for jj1=1:3
     jj1
-    p1 = importdata([pwd,'/dis_scr/v',num2str(4-jj1-1),'/ff_0.dat']);    
+    p1 = importdata([pwd,'/dis_scr/v',num2str(4-jj1-1),'/ff_0.dat']);
     for jj3=1:Nbands
-        
+
         j1=0;
         for j=1:(length(squeeze(p1(:,1))))
             if (p1(j,1)==111)&&(p1(j,2)==111)&&(p1(j,3)==111)
@@ -44,30 +44,30 @@ for jj1=1:3
                 aa(j1)=j;
             end;
         end;
-        
+
         F1=squeeze(p1(aa(bands(jj3))+1:aa(bands(jj3)+1)-1,4));
         X1=squeeze(p1(aa(bands(jj3))+1:aa(bands(jj3)+1)-1,1));
         Y1=squeeze(p1(aa(bands(jj3))+1:aa(bands(jj3)+1)-1,2));
         Z1=squeeze(p1(aa(bands(jj3))+1:aa(bands(jj3)+1)-1,3));
-        
+
         Fq = TriScatteredInterp(X1,Y1,Z1,F1);
         M=Fq(X2,Y2,Z2);
         M(isnan(M))=0;
         ME=trapz(x1,trapz(x1,trapz(x1,abs(squeeze(M)).^2,3),2),1);
-       
+
        if abs(max(M(:)))<abs(min(M(:)))
            M = -M;
        end;
-       
+
        %regular grid interp
        F = griddedInterpolant(X2, Y2, Z2, M, 'cubic');
-       M = F(X, Y, Z);   
+       M = F(X, Y, Z);
        M(isnan(M))=0;
-       M1(jj3,jj1,:,:,:) = M./sqrt(ME);                
-       
+       M1(jj3,jj1,:,:,:) = M./sqrt(ME);
+
    end;
 end;
- 
+
 %%
 
 wf1 = zeros(6,length(x),length(x),length(x));
@@ -83,7 +83,7 @@ bas_fun{1} = x;
 for jj=1:num_bs
     F=zeros(length(x),length(x),length(x));
     alt=1;
-    
+
     for j2=1:Nbands
         for j3=1:6
             if (sum(kk(j3,:))<0)
@@ -92,18 +92,18 @@ for jj=1:num_bs
                 alt = 1;
             end;
             if (j3==1)||(j3==2)
-                jjj=1;                
+                jjj=1;
             end;
             if (j3==3)||(j3==4)
-                jjj=2;                
+                jjj=2;
             end;
             if (j3==5)||(j3==6)
-                jjj=3;                
-            end;            
+                jjj=3;
+            end;
             F = F+alt*EigVec1(j2+Nbands*(j3-1),jj).*squeeze(M1(j2,jjj,:,:,:)).*squeeze(wf1(j3,:,:,:,:));
         end;
     end;
-    
+
     ME=trapz(x,trapz(x,trapz(x,abs(F).^2,3),2),1);
     if (max(abs(real(F(:))))>max(abs(imag(F(:)))))
         bas_fun{jj+1} = real(F)/sqrt(ME);

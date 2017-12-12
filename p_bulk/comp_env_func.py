@@ -12,7 +12,7 @@ def make_mesh_generator_script(path):
 verbosity=0;
 real [int,int] BBB=[[-6, 6],[-6, 6],[-6, 6]]; // coordinates the cube
 mesh3 Th=meshgen(BBB, 0, 0, 0, 1);            // coordinates of impurities
-medit(1,Th);
+//medit(1,Th);
 savemesh(Th,"%s/mesh_sample.mesh"); // save mesh for further processing
 """ % path
 

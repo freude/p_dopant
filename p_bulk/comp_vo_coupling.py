@@ -1,10 +1,14 @@
 import os
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 import scipy.linalg as linalg
 import silicon_params as si
 from read_env1 import read_env1
+from read_env import read_env_amp
 from me2 import me2
-
+from compose_wf import compose_wf
 
 pth = os.getcwd()
 k0 = si.k0 * si.ab
@@ -25,14 +29,25 @@ Nbands = np.size(bands)
 x = np.linspace(-6, 6, 100)
 path = os.path.join(pth, 'p_bulk/p_dopant_data/')
 amp, _ = read_env1(x, bands, path,
-                kk[0, :],
-                0,
-                np.array([[0, 0, 0]]))
+                   kk[0, :],
+                   0,
+                   np.array([[0, 0, 0]]))
 
 amp[np.abs(amp) < 0.01 * np.max(np.abs(amp))] = 0.0
 
 amp = np.vstack((amp, amp, amp, amp, amp, amp))
 
+
+print(amp)
+
+amp = read_env_amp(bands, path,
+                   kk[0, :],
+                   0,
+                   np.array([[0, 0, 0]]))
+
+amp[np.abs(amp) < 0.01 * np.max(np.abs(amp))] = 0.0
+
+amp = np.vstack((amp, amp, amp, amp, amp, amp))
 
 print(amp)
 
@@ -75,7 +90,6 @@ ME_b = me2(kk[0, :], kk[2, :], 'mes')
 # ME_b = me2(kk(4,:), kk(2,:), 'mes')
 # ME_a = me2(kk(4,:), kk(3,:), 'mes')
 # ME_b = me2(kk(4,:), kk(5,:), 'mes')
-# ME_b = me2(kk(4,:), kk(6,:), 'mes')
 
 # ME_b = me2(kk(5,:), kk(1,:), 'mes')
 # ME_b = me2(kk(5,:), kk(2,:), 'mes')
@@ -182,51 +196,7 @@ print(a1)
 
 EigVec1 = EigVec[:, ind]
 
-# ---------------------------Save - ---------------------------
-
-                                    # save(strcat(pth, '/dis_scr/M.mat'), 'EigVec1', 'Nbands', 'kk', 'bands', 'a1')
-
-                                    # dlmwrite('/data/users/mklymenko/abinitio_software/abi_files/tpaw/M.mat', EigVec1);
-
-# construct_wf3
-  # ---------------------------Add p - orbitals - ---------------------------
-               # main_script_p3
-
-               # p1 = importdata(['/data/users/mklymenko/abinitio_software/abi_files/tpaw/', 'dis/v0/ff_0.dat']);
-# j1 = 0;
-#
-# for j=1:(length(squeeze(p1(:, 1))))
-# if (p1(j, 1) == 111) & & (p1(j, 2) == 111) & & (p1(j, 3) == 111)
-        # j1=j1+1;
-# a(j1)=j;
-# end;
-# end;
-#
-# n1=1;
-#
-# F1=squeeze(p1(a(n1)+1:a(n1 + 1) - 1, 4));
-# # ------------------------------------------------------------------
-    #
-    # X = squeeze(p1(a(n1) + 1:a(n1 + 1) - 1, 1));
-# Y = squeeze(p1(a(n1) + 1:a(n1 + 1) - 1, 2));
-# Z = squeeze(p1(a(n1) + 1:a(n1 + 1) - 1, 3));
-#
-# Fq = TriScatteredInterp(X, Y, Z, F1);
-# x = -1.5:0.005:1.5;
-# [X, Y, Z] = meshgrid(x, x, x);
-# M = Fq(X, Y, Z);
-
-# for j1=1:6
-           #for j2=1:6
-         # if ((j1~ = j2) & & (j1 > j2))
-# M(j1, j2) = conj(M(j2, j1));
-# end;
-# end;
-# end;
-
-# VO_aniso();
-
-# MM7 = ff_data1('/data/users/mklymenko/abinitio_software/abi_files/tpaw/', 1, 1, [0 0 1], [1 0 0], '_r_xy', '_i_xy');
-# MM4 = ff_data1('/data/users/mklymenko/abinitio_software/abi_files/tpaw/', 1, 1, [0 1 0], [0 - 1 0], potxmx);
-
-
+F = compose_wf(path, kk, bands, a1, EigVec1)
+np.save('F',np.abs(F[1][61, :, :]))
+#plt.imshow(np.abs(F[1][61, :, :]))
+#plt.savefig("out.png")
