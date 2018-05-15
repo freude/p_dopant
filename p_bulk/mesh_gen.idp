@@ -1,0 +1,41 @@
+load "tetgen"
+load "msh3"
+load "medit"
+load "mshmet"
+include "SurfaceHex.idp"
+
+
+func mesh3 meshgen(real[int,int] &B, int numatoms, real[int,int] &coords, int[int] &numelinit, int flag){
+
+    //----------------------------------------------------------------
+
+    int [int,int] L=[[1,2],[3,4],[5,6]]; //labels of fringes
+    mesh3 ThH = SurfaceHex(numelinit,B,L,1); //generation of the cube surface mesh
+
+    //----------------------------------------------------------------
+
+    real hs=abs(B(0,0)-B(0,1))/numelinit(0);
+    real voltet=(hs*hs*hs)/6.;
+
+    real[int] domaine = [0,0,0.15,145,voltet];
+    mesh3 Th1 = tetg(ThH,switch="pqaAAYYQ",nbofregions=1,regionlist=domaine);
+    Th1=tetgreconstruction(Th1,switch="raAQ",sizeofvolume=voltet/20);
+
+    if (flag==1){
+
+        real A=0.00003;
+        real power=3.0;
+
+        cout << "numatoms = " << numatoms << endl;
+
+        if (numatoms==2){
+            func f = A*(sqrt(((x-coords(0,0))^2+(y-coords(0,1))^2+(z-coords(0,2))^2)))^(power) *
+                     (sqrt(((x-coords(1,0))^2+(y-coords(1,1))^2+(z-coords(1,2))^2)))^(power) +
+                     0.000000001;
+            Th1=tetgreconstruction(Th1, switch="raAQ", sizeofvolume=f);
+        }
+
+    }
+
+    return Th1;
+}

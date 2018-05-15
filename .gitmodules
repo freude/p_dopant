@@ -1,0 +1,3 @@
+[submodule "p_bulk/p_dopant_data"]
+	path = p_bulk/p_dopant_data
+	url = https://github.com/freude/p_dopant_data.git
