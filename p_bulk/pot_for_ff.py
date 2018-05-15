@@ -69,7 +69,7 @@ def parse_mesh_file(path_to_mesh=None):
     return b[:, :3]
 
 
-def pot_for_ff(k1, k2, file_ind):
+def pot_for_ff(atomic_coords, k1, k2, file_ind):
     """
     The function generate an effective potential for an elastic electron
     scattering between valley with the wave vectors `k1` and `k2`.
@@ -86,7 +86,7 @@ def pot_for_ff(k1, k2, file_ind):
 
     pwd = os.getcwd()
     log.info('Computing the smoothed potential on a regular grid...'),
-    x, V1sm = me2(k1, k2, 'pot')
+    x, V1sm = me2(k1, k2, 'pot', atomic_coords)
     log.info('Done!')
 
     # ----------------------------------------------------------------

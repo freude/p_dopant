@@ -1,0 +1,4 @@
+cube_coords:           [[-7, 7], [-7, 7], [-10, 10]]
+num_elem_init:            [5, 5, 5]
+mesh_adaptation:            true
+

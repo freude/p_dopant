@@ -1,7 +1,12 @@
 include "mesh_gen.idp"
-
-verbosity=0;				
-real [int,int] BBB=[[-6, 6],[-6, 6],[-6, 6]];     //coordinates the cube
-mesh3 Th=meshgen(BBB, 0, 0, 0, 1);             // numbers are coordinates of impurities
-//medit(1,Th);
-savemesh(Th,"/home/freude/p_dopant/p_bulk/p_dopant_data/mesh_sample.mesh"); // save mesh for further processing
+    
+              verbosity=1;
+              real [int,int] cubecoords=[[-7, 7], [-7, 7], [-10, 10]];   // coordinates the cube
+              real [int,int] atomiccoords=[[0, 0, -1.5], [0, 0, 1.5]]; // atomic coordinates
+              int [int] numelem=[5, 5, 5];       // initial number of elments
+              mesh3 Th=meshgen(cubecoords, 2, atomiccoords, numelem, 1);
+              if (verbosity > 0) medit(1,Th);
+              
+              savemesh(Th,"/home/mk/p_dopant1/p_bulk/p_dopant_data/mesh_sample.mesh"); // save mesh for further processing
+              
+           

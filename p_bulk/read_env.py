@@ -43,7 +43,7 @@ def read_env1(X, Y, Z, bands, path, k1, indi):
     # parse the raw data file
     a = []
     for j in xrange(p1.shape[0]):
-        if (p1[j, 0] == 111) and (p1[j, 1] == 111) and (p1[j, 2] == 111):
+        if (int(p1[j, 0]) == 111) and (int(p1[j, 1]) == 111) and (int(p1[j, 2]) == 111):
             a.append(j)
 
     M = np.zeros((Nbands, X.shape[0], X.shape[1], X.shape[2]))
@@ -63,7 +63,7 @@ def read_env1(X, Y, Z, bands, path, k1, indi):
         ME = simps(simps(simps(np.abs(M[jjj, :, :, :])**2, X[:, 0, 0]), X[:, 0, 0]), X[:, 0, 0])
         M[jjj, :, :, :] = M[jjj, :, :, :] / np.sqrt(ME)
 
-    return  M
+    return M
 
 
 def read_env_amp(bands, path, k1, indi, coord):
@@ -90,6 +90,6 @@ def read_env_amp(bands, path, k1, indi, coord):
         Z = p1[a[bands[jjj]] + 1:a[bands[jjj] + 1] - 1, 2]
 
         Fq = Invdisttree(np.vstack((X, Y, Z)).T, F1)
-        amp[:, jjj]=Fq(np.vstack((coord[:, 0], coord[:, 1], coord[:, 2])).T, nnear=11, eps=0, p=1)
+        amp[:, jjj] = Fq(np.vstack((coord[:, 0], coord[:, 1], coord[:, 2])).T, nnear=11, eps=0, p=1)
 
     return np.abs(amp)

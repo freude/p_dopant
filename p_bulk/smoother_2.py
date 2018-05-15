@@ -208,7 +208,7 @@ def br_zone_valley(x2, y2, z2, valley, shift):
     return bi
 
 
-def smoother_2(x, G, k1, k2, R_tr):
+def smoother_2(x, G, k1, k2, R_tr, coords):
 
     if (((k1[find(k1)] > 0) and (k2[find(k2)] < 0)) or ((k2[find(k2)] > 0) and (k1[find(k1)] < 0))) and\
             (find(k1) == find(k2)):
@@ -252,7 +252,14 @@ def smoother_2(x, G, k1, k2, R_tr):
     # plt.show()
     # plt.imshow(np.abs((bi * 0.3 * np.max(V_log) + V_log)[:, :, V.shape[2] / 2]))
     # plt.show()
-    V = bi * V
+
+    aaa = np.zeros(kX.shape, dtype=complex)
+
+    for item in coords:
+
+        aaa += np.exp(1j * (kX * item[0] + kY * item[1] + kZ * item[2]))
+
+    V = bi * V * aaa
     # bi = br_zone_valley(kX. / si.ab, kY. / si.ab, kZ. / si.ab, flag2, 1);
     # bi = fftshift(ifftn(ifftshift(bi))). * (abs(kx(2) - kx(1)) ^ 3). / ((2 * math.math.pi) ^ 3). * N ^ 3;
     # bi = trapz(x, trapz(x, trapz(x, (bi), 3), 2), 1);

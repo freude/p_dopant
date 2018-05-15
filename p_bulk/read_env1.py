@@ -59,7 +59,7 @@ def read_env1(x, bands, path, k1, indi, coord):
         Fq = Invdisttree(np.vstack((X, Y, Z)).T, F1)
         amp[:, jjj]=Fq(np.vstack((coord[:, 0], coord[:, 1], coord[:, 2])).T, nnear=11, eps=0, p=1)
 
-        X, Y, Z = np.meshgrid(x, x, x)
+        X, Y, Z = np.meshgrid(x, x, x, indexing='ij')
         M = Fq(np.vstack((X.flatten(), Y.flatten(), Z.flatten())).T, nnear=11, eps=0, p=1).reshape(X.shape)
         np.nan_to_num(M, copy=False)
 

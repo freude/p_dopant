@@ -3,13 +3,30 @@ import silicon_params as si
 from pot_scr_real import pot_scr_real
 
 
-def pot_mat(coord, k1, k2):
+def pot_mat(coord, k1, k2, atomic_coords):
 
     a = 1e-7
     
     #V=(coord.coord_limits(2)-coord.coord_limits(1)+coord.coord_stps)^3;
     x = coord.x()
     X, Y, Z = np.meshgrid(x, x, x)
+
+    V = np.zeros(X.shape)
+
+    for nuc_coords in atomic_coords:
+
+        V = V + np.real(1.0 / np.sqrt((X - nuc_coords[0])**2 +
+                                      (Y - nuc_coords[1])**2 +
+                                      (Z - nuc_coords[2])**2 +
+                                      1j*a)) *\
+            pot_scr_real(np.sqrt((X - nuc_coords[0])**2 +
+                                 (Y - nuc_coords[1])**2 +
+                                 (Z - nuc_coords[2])**2))
+
+        V = V * np.exp(1j * ((k1[0] - k2[0]) * (X - nuc_coords[0])**2 +
+                             (k1[1] - k2[1]) * (Y - nuc_coords[1])**2 +
+                             (k1[2] - k2[2]) * (Z - nuc_coords[2])**2))
+
 
     # x1 = -3e-9 / si.ab
     # y1 = 0
@@ -40,11 +57,11 @@ def pot_mat(coord, k1, k2):
     # z1 = 0 - 0 * 0.5 * coord.coord_stps
     
     # V = np.real(1.0 / np.sqrt((X-x1)**2+(Y-y1)**2+(Z-z1)**2+1j*a))*pot_scr_real(np.sqrt((X-x1)**2+(Y-y1)**2+(Z-z1)**2))
-    V = np.real(1.0 / np.sqrt(X**2+Y**2+Z**2+1j*a))*pot_scr_real(np.sqrt(X**2+Y**2+Z**2))
+    # V = np.real(1.0 / np.sqrt(X**2+Y**2+Z**2+1j*a))*pot_scr_real(np.sqrt(X**2+Y**2+Z**2))
 
     #V(isinf(V))=0;
     
     # V = V * np.exp(1j*((k1[0]-k2[0])*(X-x1)+(k1[1]-k2[1])*(Y-y1)+(k1[2]-k2[2])*(Z-z1)))
-    V = V * np.exp(1j * ((k1[0] - k2[0]) * X + (k1[1] - k2[1]) * Y + (k1[2] - k2[2]) * Z))
+    # V = V * np.exp(1j * ((k1[0] - k2[0]) * X + (k1[1] - k2[1]) * Y + (k1[2] - k2[2]) * Z))
 
     return V, X, Y, Z

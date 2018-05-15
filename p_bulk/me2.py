@@ -8,7 +8,7 @@ from scipy.integrate import simps
 from coordsys import CoordSys
 
 
-def me2(k1, k2, flag):
+def me2(k1, k2, flag, coords):
     """
     If 'me', the function computes the integral
     over a coupling filtered potential
@@ -49,14 +49,14 @@ def me2(k1, k2, flag):
             coorsys = CoordSys(num_cells, 10, 'au')
             coorsys.set_origin_cells(num_cells / 2 + 1)
 
-        V, _, _, _ = pot_mat(coorsys, k1, k2)
+        V, _, _, _ = pot_mat(coorsys, k1, k2, coords)
         x = coorsys.x()
 
         # ----------------------- apply filter function ----------------------
 
         log.info('    Apply filter function...')
         R_tr = 4
-        V1sm = smoother_2(x, G, k1, k2, R_tr)
+        V1sm = smoother_2(x, G, k1, k2, R_tr, coords)
         log.info('    Done!')
 
         if flag == 'pot':
