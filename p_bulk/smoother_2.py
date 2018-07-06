@@ -64,7 +64,7 @@ def br_zone_valley(x2, y2, z2, valley, shift):
 
     ##
     if valley == 'x':
-        tt=math.pi
+        tt = math.pi
         # Rx=[1     0      0;
         #     0 np.cos(tt) -np.sin(tt);
         #     0 np.sin(tt) np.cos(tt)];
@@ -80,7 +80,7 @@ def br_zone_valley(x2, y2, z2, valley, shift):
         x = x1 * np.cos(tt) - y1 * np.sin(tt)
         y = x1 * np.sin(tt) + y1 * np.cos(tt)
         z = z1
-        x = x - shift * si.k0
+        x = x - shift * si.k0 / si.ab
 
     if valley == 'y':
         tt = math.pi/2
@@ -99,7 +99,7 @@ def br_zone_valley(x2, y2, z2, valley, shift):
         x = x1 * np.cos(tt) - y1 * np.sin(tt)
         y = x1 * np.sin(tt) + y1 * np.cos(tt)
         z = z1
-        x = x - shift * si.k0
+        x = x - shift * si.k0 / si.ab
 
     if valley == '-y':
         tt = -math.pi/2
@@ -118,7 +118,7 @@ def br_zone_valley(x2, y2, z2, valley, shift):
         x = x1 * np.cos(tt) - y1 * np.sin(tt)
         y = x1 * np.sin(tt) + y1 * np.cos(tt)
         z = z1
-        x = x - shift * si.k0
+        x = x - shift * si.k0 / si.ab
 
     if valley == 'z':
         tt = math.pi/2
@@ -137,7 +137,7 @@ def br_zone_valley(x2, y2, z2, valley, shift):
         x = x1 * np.cos(tt) - z1 * np.sin(tt)
         z = x1 * np.sin(tt) + z1 * np.cos(tt)
         y = y1
-        x = x - shift * si.k0
+        x = x - shift * si.k0 / si.ab
 
     if valley == '-z':
         tt = -math.pi/2
@@ -156,13 +156,13 @@ def br_zone_valley(x2, y2, z2, valley, shift):
         x = x1 * np.cos(tt) - z1 * np.sin(tt)
         z = x1 * np.sin(tt) + z1 * np.cos(tt)
         y = y1
-        x = x - shift * si.k0
+        x = x - shift * si.k0 / si.ab
 
     if valley == '-x':
         x = x1
         y = y1
         z = z1
-        x = x - shift * si.k0
+        x = x - shift * si.k0 / si.ab
 
     ###
 

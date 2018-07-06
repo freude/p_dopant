@@ -2,9 +2,9 @@ include "mesh_gen.idp"
 
 verbosity = 0;
 
-//--------------------------------------------------------------------------
-//--------------------------------------------------------------------------
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------
+//-------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 
 int nev = 10;
 real sigma = -10;
@@ -27,32 +27,21 @@ fl=pth+"/pot2.txt";
 if (gamma3!=1.0)
 fl=pth+"/pot3.txt";
 
-//gamma1=1;
-//gamma2=1;
-//gamma3=0.1;
+mesh3 Th=readmesh3(pth+"/mesh_sample.mesh");
 
-mesh3
-Th=readmesh3(pth+"/mesh_sample.mesh");
-
-fespace Vh(Th,P1);
+fespace Vh(Th,P13d);
 Vh v,v1;
 Vh u1,u2,cx,cy,cz;
-
-
-    //medit(1,Th);
-    //cout<<Vh.nt<<endl;
-
 
 real[int] pot(Vh.ndof);
 {
     ifstream file(fl);
-    //file >> pot;
     for(int i=0;i<Vh.ndof;i++){
         file >> pot[i];
     }
 };
 
-//------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 
 v[]=pot;
 real z0, Amp;
@@ -67,11 +56,8 @@ int3d(Th)(0.5*gamma1*dz(u1)*dz(u2)+0.5*gamma2*dy(u1)*dy(u2)+0.5*gamma3*dx(u1)*dx
 
 varf ouu([u1],[u2]) = int3d(Th)( u1*u2 );
 
-//------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 
-
-//matrix<real> A = AA(Vh,Vh,solver=Crout,factorize=1);
-//matrix<real> uu= ouu(Vh,Vh,solver=CG,eps=1e-20);
 matrix<real> A = AA(Vh,Vh,solver=UMFPACK);
 matrix<real> uu= ouu(Vh,Vh,solver=UMFPACK);
 
@@ -90,58 +76,15 @@ int
 k=EigenValue(A,uu,sym=true,sigma=sigma,value=ev,vector=eV,maxit=10000,ncv=0,
 tol=0.0001);
 
-plot(eV[0]);
+plot(eV[0], boundary=false);
+
 //-------------------------------------------------------------------------
 //------------------------------saving-------------------------------------
 //-------------------------------------------------------------------------
 
-//for (int j=0;j<OP1.n/2;j++){
-//cout << abs(eV(j,2)) << endl;
-//}
-//for (int j=OP1.n/2;j<OP1.n;j++){
-//cout << abs(eV(j,2)) << endl;
-//}
-
-//for (int j=0;j<4*nev;j++){
-////    cout << real(ev[j]) << endl;
-//if (imag(ev[j])<0){
-//cout << real(ev[j]) << "-" << abs(imag(ev[j])) << "j" << endl;
-//}
-//else{
-//cout << real(ev[j]) << "+" << imag(ev[j]) << "j" << endl;
-//}
-
-// spectrum
-
-
-
-
-
-//cout << "spectrum" << endl;
-//
-//for (int j2=0;j2<2*nev;j2++){
-//    cout << ev[j2] << endl;
-//}
-//
-//// wave functions
-//cout << "wave_functions" << endl;
-//
-//int ne=2;
-//Vh[int] coor(3);
-//coor[0] = x;
-//coor[1] = y;
-//coor[2] = z;
-//
-//cout << Vh.ndof << " " << A.n << endl;
-//for (int i=0; i<Vh.ndof; i++){
-//cout<<coor[0][][i]<<" "<<coor[1][][i]<<" "<<coor[2][][i]<<" "<<abs(eV(i,ne))<< endl;
-//}
-//
-
 cx=x;
 cy=y;
 cz=z;
-
 
 if (gamma1!=1.0)
 {

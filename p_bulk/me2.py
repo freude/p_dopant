@@ -41,8 +41,8 @@ def me2(k1, k2, flag, coords):
         # end;
 
         if np.array_equal(k1, k2):
-            num_cells = 70
-            coorsys = CoordSys(num_cells, 3, 'au')
+            num_cells = 64
+            coorsys = CoordSys(num_cells, 5, 'au')
             coorsys.set_origin_cells(num_cells / 2 + 1)
         else:
             num_cells = 16
@@ -55,7 +55,7 @@ def me2(k1, k2, flag, coords):
         # ----------------------- apply filter function ----------------------
 
         log.info('    Apply filter function...')
-        R_tr = 4
+        R_tr = 5
         V1sm = smoother_2(x, G, k1, k2, R_tr, coords)
         log.info('    Done!')
 
