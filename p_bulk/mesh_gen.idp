@@ -24,7 +24,7 @@ func mesh3 meshgen(real[int,int] &B, int numatoms, real[int,int] &coords, int[in
     if (flag==1){
 
         real A=0.00003;
-        real power=3.0;
+        real power=2.3;
 
         cout << "numatoms = " << numatoms << endl;
 
@@ -34,8 +34,6 @@ func mesh3 meshgen(real[int,int] &B, int numatoms, real[int,int] &coords, int[in
                      0.000000001;
             Th1=tetgreconstruction(Th1, switch="raAQ", sizeofvolume=f);
         }
-
     }
-
     return Th1;
 }

@@ -58,7 +58,7 @@ def parse_mesh_file(path_to_mesh=None):
 
     if path_to_mesh is None:
         path_to_mesh = os.getcwd()
-        path_to_mesh = os.path.join(path_to_mesh, 'p_dopant_data/mesh_sample.mesh')
+        path_to_mesh = os.path.join(path_to_mesh, 'mesh_sample.mesh')
 
     ind = read_txt_between_delimiters(path_to_mesh, 'Vertices', 'Tetrahedra')
 
@@ -69,7 +69,7 @@ def parse_mesh_file(path_to_mesh=None):
     return b[:, :3]
 
 
-def pot_for_ff(atomic_coords, k1, k2, file_ind):
+def pot_for_ff(path, atomic_coords, k1, k2, file_ind):
     """
     The function generate an effective potential for an elastic electron
     scattering between valley with the wave vectors `k1` and `k2`.
@@ -92,7 +92,7 @@ def pot_for_ff(atomic_coords, k1, k2, file_ind):
     # ----------------------------------------------------------------
 
     log.info('Read the mesh...'),
-    b = parse_mesh_file()
+    b = parse_mesh_file(path_to_mesh=os.path.join(path, 'mesh_sample.mesh'))
     log.info('Done!')
 
     log.info('Build the interpolant for the potential...'),
@@ -105,13 +105,13 @@ def pot_for_ff(atomic_coords, k1, k2, file_ind):
         V1sm = np.real(V1sm)
 
     if not np.iscomplexobj(V1sm):
-        if os.path.isfile(os.path.join(pwd, 'p_dopant_data/F' + str(file_ind) + '.pkl')):
-            with open(os.path.join(pwd, 'p_dopant_data/F' + str(file_ind) + '.pkl'), 'rb') as input:
+        if os.path.isfile(os.path.join(pwd, 'F' + str(file_ind) + '.pkl')):
+            with open(os.path.join(path, 'F' + str(file_ind) + '.pkl'), 'rb') as input:
                 F = pickle.load(input)
         else:
             V1sm = np.transpose(V1sm, (1, 0, 2))
             F = RegularGridInterpolator((x, x, x), V1sm, bounds_error=False)
-            with open(os.path.join(pwd, 'p_dopant_data/F' + str(file_ind) + '.pkl'), 'wb') as output:
+            with open(os.path.join(path, 'F' + str(file_ind) + '.pkl'), 'wb') as output:
                 pickle.dump(F, output)
 
         log.info('Done!')
@@ -122,23 +122,23 @@ def pot_for_ff(atomic_coords, k1, k2, file_ind):
         log.info('Done!')
 
         log.info('Save the potential and the mesh...'),
-        np.savetxt(os.path.join(pwd, 'p_dopant_data/pot' + str(file_ind) + '.txt'), pot)
-        np.savetxt(os.path.join(pwd, 'p_dopant_data/mesh.dat'), b)
+        np.savetxt(os.path.join(path, 'pot' + str(file_ind) + '.txt'), pot)
+        np.savetxt(os.path.join(path, 'mesh.dat'), b)
         log.info('Done!\n')
 
     else:
 
-        if os.path.isfile(os.path.join(pwd, 'p_dopant_data/F'+ str(file_ind) + 'r.pkl')) and\
-                os.path.isfile(os.path.join(pwd, 'p_dopant_data/F'+ str(file_ind) + 'i.pkl')):
+        if os.path.isfile(os.path.join(pwd, 'p_dopant_data/F' + str(file_ind) + 'r.pkl')) and\
+                os.path.isfile(os.path.join(pwd, 'p_dopant_data/F' + str(file_ind) + 'i.pkl')):
 
-            with open(os.path.join(pwd, 'p_dopant_data/F'+ str(file_ind) + 'r.pkl'), 'rb') as input:
-                Fr = pickle.load(input)
-            with open(os.path.join(pwd, 'p_dopant_data/F'+ str(file_ind) + 'i.pkl'), 'rb') as input:
-                Fi = pickle.load(input)
+            with open(os.path.join(pwd, 'p_dopant_data/F' + str(file_ind) + 'r.pkl'), 'rb') as inp:
+                Fr = pickle.load(inp)
+            with open(os.path.join(pwd, 'p_dopant_data/F' + str(file_ind) + 'i.pkl'), 'rb') as inp:
+                Fi = pickle.load(inp)
 
         else:
-            V1sm_r = np.transpose(np.real(V1sm), (1, 0, 2))
-            V1sm_i = np.transpose(np.imag(V1sm), (1, 0, 2))
+            V1sm_r = np.transpose(np.real(V1sm), (1, 0, 2))  # TODO the order of potential coordinates is incorrect
+            V1sm_i = np.transpose(np.imag(V1sm), (1, 0, 2))  # TODO the order of potential coordinates is incorrect
             Fr = RegularGridInterpolator((x, x, x), V1sm_r)
             Fi = RegularGridInterpolator((x, x, x), V1sm_i)
 

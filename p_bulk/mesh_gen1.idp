@@ -1,0 +1,73 @@
+load "tetgen"
+load "msh3"
+load "medit"
+load "mshmet"
+include "SurfaceHex.idp"
+include "Sphere.idp"
+include "Ellipse.idp"
+
+
+func mesh3 meshgen(real[int,int] &B, int numatoms, real[int,int] &coords, int[int] &numelinit, int flag){
+
+    //----------------------------------------------------------------
+
+    real[int] x1=[0,0,coords(0,2)];
+    real[int] x2=[0,0, coords(1,2)];
+
+    real R = 0.4;
+
+    int [int,int] L=[[1,2],[3,4],[5,6]]; //labels of fringes
+    mesh3 ThH = SurfaceHex(numelinit,B,L,1); //generation of the cube surface mesh
+
+    mesh3 Th0;
+    real[int] x0=[0,0,0];
+
+    if (abs(x2[2]-x1[2])/2 > R){
+    cout << "hi" << endl;
+        real[int] ellip=[1,1,1];
+        mesh3 ThS1 = Sphere(x1, ellip, R, 0.07, 10, 1);
+        mesh3 ThS2 = Sphere(x2, ellip, R, 0.07, 10, 1);
+        Th0=ThH+ThS1+ThS2;
+    }
+    else{
+        real[int] ellip = [0,0,0];
+        ellip[0] = 1;
+        ellip[1] = 1;
+        ellip[2] = sqrt((x1[2]-x2[2])^2+R^2)/R;
+        mesh3 ThS = Sphere(x0, ellip, R, 0.07, 10, 1);
+        Th0=ThH+ThS;
+    }
+
+    mesh3 ThS;
+
+    if (abs(x2[2]-x1[2])/2 > 1.7){
+        real[int] ellip = [0,0,0];
+        ellip[0] = 1;
+        ellip[1] = 1;
+        ellip[2] = 1.2*sqrt((0.5*(x1[2]-x2[2]))^2+(3*R)^2);
+        ThS = Sphere(x0, ellip, 0.8*(3*R+0.3*abs(x1[2]-x2[2])), 0.2, 10, 1);
+    }
+    else{
+        real[int] ellip = [0,0,0];
+        ellip[0] = 1;
+        ellip[1] = 1;
+        ellip[2] = sqrt((0.5*(x1[2]-x2[2]))^2+(3*R)^2);
+        ThS = Sphere(x0, ellip, 3*R+0.3*abs(x1[2]-x2[2]), 0.2, 10, 1);
+    }
+
+    mesh3 Th = Th0+ThS;
+
+    //----------------------------------------------------------------
+
+    real hs=abs(B(0,0)-B(0,1)) / numelinit(0);
+    real voltet=(hs*hs*hs)/6.;
+
+    real[int] domaine = [2.9, 2.9, 0, 2, voltet/3,
+                         x1[0], x1[1], x1[2], 1, voltet/1500,
+                         x2[0], x2[1], x2[2], 1, voltet/1500,
+                         1.0*R, 1.0*R, 0, 1, voltet/300];
+
+    mesh3 Th1 = tetg(Th,switch="pqaAAYYQ",nbofregions=4,regionlist=domaine);
+
+    return Th1;
+}

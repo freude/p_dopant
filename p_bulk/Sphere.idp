@@ -1,0 +1,33 @@
+load "medit"
+load "msh3"
+
+func mesh3 Sphere(real[int] & coords, real[int] & ellip, real R,real h,int L,int orientation)
+{
+mesh Th=square(10,20,[x*pi-pi/2,2*y*pi]);
+// a parametrization of a sphere
+func f1 =cos(x)*cos(y);
+func f2 =cos(x)*sin(y);
+func f3 = sin(x);
+// partiel derivative
+func f1x=sin(x)*cos(y);
+func f1y=-cos(x)*sin(y);
+func f2x=-sin(x)*sin(y);
+func f2y=cos(x)*cos(y);
+func f3x=cos(x);
+func f3y=0;
+// the metric on the sphere
+func m11=f1x^2+f2x^2+f3x^2;
+func m21=f1x*f1y+f2x*f2y+f3x*f3y;
+func m22=f1y^2+f2y^2+f3y^2;
+func perio=[[4,y],[2,y],[1,x],[3,x]]; // to store the periodic condition
+real hh=h/R; // hh mesh size on unite sphere
+real vv= 1/square(hh);
+Th=adaptmesh(Th,m11*vv,m21*vv,m22*vv,IsMetric=1,periodic=perio);
+Th=adaptmesh(Th,m11*vv,m21*vv,m22*vv,IsMetric=1,periodic=perio);
+Th=adaptmesh(Th,m11*vv,m21*vv,m22*vv,IsMetric=1,periodic=perio);
+Th=adaptmesh(Th,m11*vv,m21*vv,m22*vv,IsMetric=1,periodic=perio);
+int[int] ref=[0,30];
+mesh3 ThS= movemesh23(Th,transfo=[f1*R*ellip[0]+coords[0], f2*R*ellip[1]+coords[1], f3*R*ellip[2]+coords[2]],orientation=orientation,refface=ref);
+
+return ThS;
+}

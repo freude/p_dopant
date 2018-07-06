@@ -13,6 +13,7 @@ def compose_wf(path, kk, bands, eigen_val, eigen_vec):
     coorsys = CoordSys(num_cells, T, 'au')
     coorsys.set_origin_cells(num_cells / 2 + 1)
     x = coorsys.x()
+
     X, Y, Z = np.meshgrid(x, x, x, indexing='ij')
     s = X.shape
     Nbands = len(bands)
@@ -20,7 +21,7 @@ def compose_wf(path, kk, bands, eigen_val, eigen_vec):
 
     for jj1 in xrange(3):
         print(jj1)
-        M1[jj1, :, :, :, :] = read_env1(X, Y, Z, bands, path, kk[2 * jj1], 0)
+        M1[jj1, :, :, :, :] = read_env1(X, Y, Z, bands, path, kk[2 * (2 - jj1)], 0)
 
     wf1 = np.zeros((6, s[0], s[1], s[2]), dtype=np.complex)
 
@@ -29,7 +30,6 @@ def compose_wf(path, kk, bands, eigen_val, eigen_vec):
                           np.exp(1j * (kk[j, 0] * X + kk[j, 1] * Y + kk[j, 2] * Z))
 
     num_bs = 12
-
     bas_fun = []
     bas_fun.append(x)
 

@@ -1,12 +1,12 @@
-include "mesh_gen.idp"
+include "mesh_gen1.idp"
     
               verbosity=1;
-              real [int,int] cubecoords=[[-7, 7], [-7, 7], [-10, 10]];   // coordinates the cube
-              real [int,int] atomiccoords=[[0, 0, -1.5], [0, 0, 1.5]]; // atomic coordinates
-              int [int] numelem=[5, 5, 5];       // initial number of elments
+              real [int,int] cubecoords=[[-7, 7], [-7, 7], [-9, 9]];   // coordinates the cube
+              real [int,int] atomiccoords=[[0.0, 0.0, -1.8938598933021291], [0.0, 0.0, 1.8938598933021291]]; // atomic coordinates
+              int [int] numelem=[15, 15, 17];       // initial number of elments
               mesh3 Th=meshgen(cubecoords, 2, atomiccoords, numelem, 1);
               if (verbosity > 0) medit(1,Th);
               
-              savemesh(Th,"/home/mk/p_dopant1/p_bulk/p_dopant_data/mesh_sample.mesh"); // save mesh for further processing
+              savemesh(Th,"/home/mk/p_dopant1/p_bulk/p_dopant_data/sys_0_0_m11d00_0_0_11d00/mesh_sample.mesh"); // save mesh for further processing
               
            

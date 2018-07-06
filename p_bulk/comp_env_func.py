@@ -5,14 +5,14 @@ import ast
 import numpy as np
 import silicon_params as si
 from pot_for_ff import pot_for_ff
-from aux_functions import yaml_parser
+from aux_functions import yaml_parser, make_id
 
 
 def make_mesh_generator_script(path,
-                               cube_coords='[[-7, 7], [-7, 7], [-7, 7]]',
+                               cube_coords='[[-7, 7], [-7, 7], [-11, 11]]',
                                num_elem_init='[5, 5, 5]',
                                atomic_coords='[[0, 0, 0]]',
-                               mesh_adaptation=1,
+                               mesh_adaptation=0,
                                verbosity=1):
 
     cube_coords = str(cube_coords)
@@ -21,7 +21,7 @@ def make_mesh_generator_script(path,
     mesh_adaptation = int(mesh_adaptation)
     coords = ast.literal_eval(atomic_coords)
 
-    return """include "mesh_gen.idp"
+    return """include "mesh_gen1.idp"
     
               verbosity={6!s};
               real [int,int] cubecoords={1!s};   // coordinates the cube
@@ -41,30 +41,33 @@ def make_mesh_generator_script(path,
                       verbosity)
 
 
-def main(**kwargs):
+def comp_env_func(atomic_coords, field, cnfg, path_to_data, verbosity):
     """
     Main script that computes the set of envelope functions
-
-    :param kwargs: input arguments parsed from the command line
     :return:
     """
-    # ----------------------- parse inputs ----------------------
 
-    cnfg = yaml_parser(kwargs.get('path_to_config'))
-    path_to_data = kwargs.get('path_to_data')
-    verbosity = kwargs.get('verbosity')
+    id = make_id(field, atomic_coords / si.a_Si)
+    atomic_coords = (atomic_coords / si.ab).tolist()
+    field = field.tolist()
+
+    path_to_data = os.path.join(path_to_data, id)
 
     if verbosity > 0:
         print("I am going to save data to {}".format(path_to_data))
 
     # ----------------- check whether path is exist -------------
 
-    if not os.path.isdir(path_to_data):
-        raise EnvironmentError("Path to data does not exist, ", path_to_data)
-
-    # ---------------------- atomic coordinates ------------------------
-
-    atomic_coords = [[0, 0, -1.5], [0, 0, 1.5]]
+    if not os.path.exists(path_to_data):
+        print("Path to data does not exist, {}".format(path_to_data))
+        user_input = raw_input("Do you want me to create a new directory for data? [y/N]:")
+        if user_input.lower() == 'y':
+            os.makedirs(path_to_data)
+            os.makedirs(os.path.join(path_to_data, 'v0'))
+            os.makedirs(os.path.join(path_to_data, 'v1'))
+            os.makedirs(os.path.join(path_to_data, 'v2'))
+        else:
+            raise EnvironmentError("Path to data does not exist, ", path_to_data)
 
     # ---------------------- making mesh ------------------------
 
@@ -121,9 +124,9 @@ def main(**kwargs):
                             [0,  0,  1],
                             [0,  0, -1]])
 
-        pot_for_ff(atomic_coords, kk[0, :], kk[0, :], '1')
-        pot_for_ff(atomic_coords, kk[1, :], kk[1, :], '2')
-        pot_for_ff(atomic_coords, kk[2, :], kk[2, :], '3')
+        pot_for_ff(path_to_data, atomic_coords, kk[0, :], kk[0, :], '1')
+        pot_for_ff(path_to_data, atomic_coords, kk[1, :], kk[1, :], '2')
+        pot_for_ff(path_to_data, atomic_coords, kk[2, :], kk[2, :], '3')
 
     # ---------------- computing envelope functions  ------------
 
@@ -139,6 +142,31 @@ def main(**kwargs):
     p1.communicate()
     p2.communicate()
     p3.communicate()
+
+
+def main(**kwargs):
+
+    # ----------------------- parse inputs ----------------------
+
+    cnfg = yaml_parser(kwargs.get('path_to_config'))
+    path_to_data = kwargs.get('path_to_data')
+    verbosity = kwargs.get('verbosity')
+
+    atomic_coords = cnfg['atomic_coords']
+    fields = cnfg['field']
+
+    atomic_coords = si.a_Si * np.array(atomic_coords)
+    fields = np.array(fields)
+
+    if len(atomic_coords.shape) == 2:
+        atomic_coords = [atomic_coords]
+
+    if len(fields.shape) == 1:
+        fields = [fields]
+
+    for coords in atomic_coords:
+        for field in fields:
+            comp_env_func(coords, field, cnfg, path_to_data, verbosity)
 
 
 if __name__ == '__main__':
